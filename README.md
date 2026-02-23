@@ -2,7 +2,7 @@
 
 Biobyte Organizer es un asistente automatizado que actúa como un "sereno" para tu carpeta de descargas. Su función
 principal es vigilar la carpeta y, de forma automática o bajo demanda, clasificar cada archivo en su lugar
-correspondiente (carpetas de Imágenes, Documentos, Vídeos, etc.).
+correspondiente (carpetas de Imágenes, Documentos, Vídeos, etc.). JAJAJAJA
 
 ## Instalar y Activar .venv
 
