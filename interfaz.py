@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import messagebox, filedialog
 import customtkinter as ctk
 from PIL import Image
+from file_organizer import FileOrganizer
 
 colores = {
     'verde': '#31C204',
@@ -10,7 +11,6 @@ colores = {
     'bg_cont': '#CFCDCC',
     'bg_ter': 'white'
 }
-
 
 def centrar_ventana(ventana, ancho, alto):
     pantalla_ancho = ventana.winfo_screenwidth()
@@ -27,6 +27,8 @@ class App(tk.Frame):
         super().__init__(master, bg=colores['bg_prin'])
         self.pack(fill="both", expand=True)
 
+        self.organizer = FileOrganizer()
+
         self.ruta_var = ctk.StringVar(value='Seleccione una carpeta...')
         self.switch_var = ctk.StringVar(value="off")
         self.copia_seg_var = ctk.BooleanVar(value=False)
@@ -39,21 +41,34 @@ class App(tk.Frame):
         self.crear_widgets()
 
     def actualizar_resumen(self, cantidad, hizo_copia):
-        # 1. Actualizar cantidad
-        self.res_archivos.configure(text=f"{cantidad} archivos")
 
-        # 2. Actualizar texto de copia
-        txt_copia = "Realizada (Encriptada)" if self.encriptar_var.get() else "Realizada"
-        self.res_copia.configure(text=txt_copia if hizo_copia else "No realizada")
+        self.archMovidosResumen.configure(text=f"Archivos movidos ➡ {cantidad}")
 
-        # 3. Mostrar criterio de orden (basado en tus checkboxes)
+        txt_copia = "Sí (Encriptada)" if self.encriptar_var.get() else "Sí"
+        self.copiaSegResumen.configure(
+            text=f"Copia de Seguridad ➡ {txt_copia if hizo_copia else 'No'}"
+        )
+
         criterio = "Carpeta"
         if self.ord_fecha_var.get(): criterio = "Fecha"
         if self.ord_tamano_var.get(): criterio = "Tamaño"
-        self.res_criterio.configure(text=criterio)
 
-        # 4. Mensaje final
-        self.res_estado_final.configure(text="¡Operación completada con éxito!", text_color=colores['verde'])
+        self.organizadoPorResumen.configure(text=f"Organizado por ➡ {criterio}")
+
+        self.encriptadoSegResumen.configure(
+            text=f"Encriptado ➡ {'Sí' if self.encriptar_var.get() else 'No'}"
+        )
+
+    # ---------------------------------------------------------
+    # APLICAR CRITERIO DE ORDEN
+    # ---------------------------------------------------------
+    def aplicar_criterio_orden(self):
+        if self.ord_fecha_var.get():
+            self.organizer.ordenar_por("fecha")
+        elif self.ord_tamano_var.get():
+            self.organizer.ordenar_por("tamano")
+        else:
+            self.organizer.ordenar_por("carpeta")
 
     def crear_widgets(self):
         # PRIMER DIV
@@ -92,6 +107,9 @@ class App(tk.Frame):
                 self.checkOrdTamano.configure(state='disabled')
                 self.checkOrdFecha.configure(state='disabled')
                 self.checkOrdCarpeta.configure(state='disabled')
+
+                self.aplicar_criterio_orden()
+
             else:
                 self.select_folder.configure(state='normal')
                 self.checkCopiaSeguridad.configure(state='normal')
