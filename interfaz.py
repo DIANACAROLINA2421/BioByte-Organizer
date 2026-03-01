@@ -2,7 +2,7 @@ import tkinter as tk
 from tkinter import messagebox, filedialog
 import customtkinter as ctk
 from PIL import Image
-from file_organizer import FileOrganizer
+from file_organizer import OrganizarArchivos
 
 
 colores = {
@@ -29,7 +29,7 @@ class App(tk.Frame):
         self.pack(fill="both", expand=True)
 
 
-        self.organizer = FileOrganizer()
+        self.organizer = OrganizarArchivos()
 
 
         self.ruta_var = ctk.StringVar(value='Seleccione una carpeta...')
@@ -165,7 +165,7 @@ class App(tk.Frame):
             carpeta = filedialog.askdirectory(title="Seleccionar Carpeta")
             if carpeta:
                 self.ruta_var.set(carpeta)
-                self.organizer.set_base_path(carpeta)
+                self.organizer.set_ruta_base(carpeta)
                 self.switch.configure(state='normal')
                 messagebox.showinfo("Seleccionar carpeta", f"Se seleccionó la carpeta:\n{carpeta}")
 
